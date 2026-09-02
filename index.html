@@ -1,439 +1,623 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <title>Điểm Danh Nhanh</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-color: #1e293b;
-      --border-color: #cbd5e1;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 480px;
-      background: var(--card-bg);
-      min-height: 100vh;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-    }
-    .header {
-      background-color: var(--primary);
-      color: white;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .date-badge {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .content {
-      padding: 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .info-box {
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .class-select-box {
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .class-select-box select {
-      background: transparent;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
-      color: var(--primary-dark);
-      outline: none;
-      cursor: pointer;
-      width: 100%;
-    }
-    .summary-card {
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 20px;
-      background: white;
-      text-align: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .summary-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .summary-title {
-      font-weight: 600;
-      font-size: 16px;
-    }
-    .lock-badge {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .absent-number-box {
-      background: #f8fafc;
-      border: 2px solid var(--border-color);
-      border-radius: 12px;
-      padding: 15px;
-      font-size: 36px;
-      font-weight: bold;
-      color: #ef4444;
-      margin-bottom: 15px;
-    }
-    .status-text {
-      color: #059669;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .student-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 250px;
-      overflow-y: auto;
-      text-align: left;
-    }
-    .student-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px;
-      background: #f8fafc;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-    }
-    .btn-submit {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-      width: 100%;
-      margin-top: auto;
-    }
-    .btn-submit:hover {
-      background-color: var(--primary-dark);
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: white;
-      padding: 24px;
-      border-radius: 16px;
-      width: 85%;
-      max-width: 320px;
-      text-align: center;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin: 15px 0;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 16px;
-      box-sizing: border-box;
-      text-align: center;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-    }
-    .modal-actions button {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-cancel { background: #e2e8f0; color: #334155; }
-    .btn-confirm { background: var(--primary); color: white; }
-  </style>
-</head>
-<body>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Điểm Danh Nhanh</title>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --primary-light: #e0e7ff;
+        --accent: #06b6d4;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #475569;
+        --border-color: #cbd5e1;
+        --danger: #ef4444;
+        --danger-light: #fee2e2;
+        --success: #10b981;
+      }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+      .fullscreen-app {
+        width: 100%;
+        max-width: 420px;
+        background: var(--card-bg);
+        border-radius: 14px;
+        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        overflow: hidden;
+        margin-top: 4px;
+        margin-bottom: 4px;
+      }
+      .header-bar {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        font-size: 19px;
+        letter-spacing: 0.3px;
+      }
+      .content {
+        padding: 14px;
+        flex: 1;
+        box-sizing: border-box;
+        background-color: #f8fafc;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+      .meta-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f1f5f9;
+        padding: 10px 14px;
+        border-radius: 8px;
+        justify-content: flex-start;
+        font-size: 16px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .meta-item select {
+        border: none;
+        background: transparent;
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 16px;
+        outline: none;
+        cursor: pointer;
+        width: 100%;
+      }
+      .grid-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .label-title {
+        font-size: 15px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .input-number {
+        width: 100%;
+        padding: 12px;
+        font-size: 24px;
+        border: 2px solid #cbd5e1;
+        border-radius: 10px;
+        box-sizing: border-box;
+        outline: none;
+        color: var(--danger);
+        font-weight: 900;
+        text-align: center;
+        background: #fff;
+        transition: border-color 0.2s;
+      }
+      .input-number:disabled {
+        background: #e2e8f0;
+        cursor: not-allowed;
+      }
+      .input-number:focus {
+        border-color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+      }
+      .stat-card {
+        flex: 1;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px 8px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .stat-card .title {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        font-weight: 700;
+      }
+      .stat-card .value {
+        font-size: 22px;
+        font-weight: 900;
+      }
+      .stat-card.vắng .value { color: var(--danger); }
+      .stat-card.comat .value { color: var(--primary); }
+      .select-dropdown {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background: #fff;
+        color: var(--text-main);
+        outline: none;
+        font-weight: 600;
+        box-sizing: border-box;
+      }
+      .select-dropdown:disabled {
+        background: #e2e8f0;
+        cursor: not-allowed;
+      }
+      .textarea-note {
+        width: 100%;
+        height: 75px;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        box-sizing: border-box;
+        resize: none;
+        outline: none;
+        color: var(--text-main);
+        background: #fff;
+        font-weight: 500;
+      }
+      .textarea-note:disabled {
+        background: #e2e8f0;
+        cursor: not-allowed;
+      }
+      .absent-student-list {
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 8px;
+        margin-top: 10px;
+        max-height: 150px;
+        overflow-y: auto;
+      }
+      .absent-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        background: #fff;
+        margin-bottom: 6px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .remove-btn {
+        background: var(--danger-light);
+        color: var(--danger);
+        border: none;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .remove-btn:disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+        cursor: not-allowed;
+      }
+      .btn-save {
+        width: 100%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      }
+      .btn-save:disabled {
+        background: #94a3b8;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+      .save-status {
+        font-size: 14px;
+        color: var(--success);
+        font-weight: 700;
+        text-align: right;
+        margin-top: 6px;
+      }
+      .unlock-badge {
+        font-size: 13px;
+        background: var(--danger-light);
+        color: var(--danger);
+        padding: 3px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        border: 1px solid #fecaca;
+      }
+      .unlock-badge.unlocked {
+        background: #d1fae5;
+        color: var(--success);
+        border-color: #a7f3d0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fullscreen-app">
+      <div class="header-bar">
+        <span>✨ Điểm Danh Nhanh</span>
+        <span id="headerDate" style="font-size: 15px; font-weight: 600; background: rgba(255,255,255,0.25); padding: 5px 12px; border-radius: 20px;">📅 --/--/----</span>
+      </div>
+      
+      <div class="content">
+        <div class="card" style="padding: 12px 14px; margin-bottom: 12px;">
+          <div class="meta-row">
+            <div class="meta-item" id="currentDateShort">📅 --</div>
+            <div class="meta-item">☀️ Buổi: <b>Sáng</b></div>
+            <div class="meta-item">
+              🎓 Lớp: 
+              <select id="classSelect" onchange="onClassChange()">
+                <option value="">Đang tải dữ liệu...</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-  <div class="container">
-    <div class="header">
-      <h1>✨ Điểm Danh Nhanh</h1>
-      <div class="date-badge" id="currentDateBadge">--/--/----</div>
-    </div>
+        <div class="grid-layout">
+          <div class="card" style="margin-bottom: 0;">
+            <div class="label-title">
+              <span>📊 Tổng số học sinh vắng:</span>
+              <span id="lockStatusBadge" class="unlock-badge" onclick="requestUnlock()">🔒 Đang khóa</span>
+            </div>
+            <input type="number" id="absentInput" class="input-number" value="0" min="0" oninput="updateStats()" disabled>
+            <div id="saveStatus" class="save-status">Chưa tải dữ liệu</div>
+          </div>
+          
+          <div class="card" style="margin-bottom: 0;">
+            <div class="stats-container">
+              <div class="stat-card vắng">
+                <div class="title">Vắng</div>
+                <div class="value" id="statAbsent">0</div>
+              </div>
+              <div class="stat-card comat">
+                <div class="title">Có mặt / Tổng</div>
+                <div class="value" id="statPresentTotal" style="font-size: 18px;">0 / 0</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div class="content">
-      <div class="info-box" id="dateDisplay">📅 Đang tải ngày...</div>
-      <div class="info-box" id="sessionDisplay">☀️ Buổi: Đang xác định...</div>
-
-      <div class="class-select-box">
-        <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
-          <span style="font-weight: 600;">🎓 Lớp:</span>
-          <select id="classSelect" onchange="changeClass()">
-            <option value="">Đang tải lớp...</option>
+        <div class="card" style="margin-bottom: 12px; margin-top: 12px;">
+          <div class="label-title">📝 DANH SÁCH & GHI CHÚ VẮNG</div>
+          <select id="quickSelectStudent" class="select-dropdown" onchange="addAbsentStudent(this)" disabled>
+            <option value="">-- Chọn nhanh học sinh từ danh sách --</option>
           </select>
+          <textarea id="noteTextarea" class="textarea-note" placeholder="Nhập mật khẩu để mở khóa chỉnh sửa..." oninput="syncTypedNamesToasts()" disabled></textarea>
+          
+          <div class="label-title" style="margin-top: 12px; margin-bottom: 6px;">Danh sách hiển thị chi tiết:</div>
+          <div id="absentStudentContainer" class="absent-student-list">
+            <div style="color: #94a3b8; font-size: 15px; text-align: center; padding: 8px;">Chưa có học sinh nào vắng</div>
+          </div>
         </div>
-      </div>
 
-      <div class="summary-card">
-        <div class="summary-header">
-          <span class="summary-title">📊 Tổng số học sinh vắng:</span>
-          <span class="lock-badge" id="lockStatus">🔒 Đang khóa</span>
-        </div>
-        
-        <div class="absent-number-box" id="absentCountDisplay">0</div>
-        
-        <div style="margin-bottom: 12px; font-weight: 600; text-align: left; font-size: 14px; color: #475569;">
-          Chọn học sinh vắng (Nhấn để mở khóa chỉnh sửa):
-        </div>
-        
-        <div class="student-list" id="studentListContainer"></div>
-        <div class="status-text" id="statusMessage" style="margin-top: 15px;">Chưa lưu điểm danh</div>
-      </div>
-
-      <button class="btn-submit" onclick="requestSubmit()">Lưu Điểm Danh</button>
-    </div>
-  </div>
-
-  <div class="modal" id="passwordModal">
-    <div class="modal-content">
-      <h3>Xác thực mật khẩu</h3>
-      <p style="font-size: 13px; color: #64748b;">Nhập mật khẩu để mở khóa và lưu điểm danh</p>
-      <input type="password" id="passwordInput" placeholder="Nhập mật khẩu...">
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Hủy</button>
-        <button class="btn-confirm" onclick="verifyAndUnlock()">Xác nhận</button>
+        <button id="saveBtn" class="btn-save" onclick="saveAttendance()" disabled>
+          <span>✔ LƯU ĐIỂM DANH NGAY (CẦN MẬT KHẨU)</span>
+        </button>
       </div>
     </div>
-  </div>
 
-  <script>
-    // Link Web App Google Apps Script của bạn
-    const API_URL = "https://script.google.com/macros/s/AKfycbxx3c_xGCM86KMsH9SOhLm5CwvS4zh57RLwpzHxPUjb41XND7dbpEh2TK424d7GUnA/exec"; 
+    <script>
+      // Thay URL bên dưới bằng Web App URL của Google Apps Script bạn đã deploy
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPb4Txkqa8XJvPtSRMyEnL46-8cnQUml2fgUzzPa7P_IeqHjKMW8XM4PmKSssUjZZR/exec";
 
-    let globalData = {};
-    let isUnlocked = false;
+      let globalData = {};
+      let currentTotalStudents = 0; 
+      let absentStudentNames = []; 
+      let isUnlocked = false; 
+      let currentPassword = ""; 
 
-    function initDateTime() {
-      const now = new Date();
-      const day = String(now.getDate()).padStart(2, '0');
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const year = now.getFullYear();
-      document.getElementById("currentDateBadge").innerText = `${day}/${month}/${year}`;
-      
-      const daysOfWeek = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
-      document.getElementById("dateDisplay").innerText = `📅 ${daysOfWeek[now.getDay()]}, ${day}/${month}`;
+      window.onload = function() {
+        let today = new Date();
+        let days = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+        let dayStr = days[today.getDay()];
+        let dateFormatted = dayStr + ", " + String(today.getDate()).padStart(2, '0') + "/" + String(today.getMonth() + 1).padStart(2, '0');
+        let dateHeaderStr = String(today.getDate()).padStart(2, '0') + "/" + String(today.getMonth() + 1).padStart(2, '0') + "/" + today.getFullYear();
+        
+        document.getElementById('currentDateShort').innerText = "📅 " + dateFormatted;
+        document.getElementById('headerDate').innerText = "📅 " + dateHeaderStr;
 
-      // Tự động nhận diện Buổi (Sáng / Chiều / Tối) theo giờ thực tế của thiết bị
-      const hour = now.getHours();
-      let sessionName = "Sáng";
-      let sessionIcon = "☀️";
-      
-      if (hour >= 12 && hour < 18) {
-        sessionName = "Chiều";
-        sessionIcon = "🌤️";
-      } else if (hour >= 18) {
-        sessionName = "Tối";
-        sessionIcon = "🌙";
-      }
-      
-      document.getElementById("sessionDisplay").innerHTML = `${sessionIcon} Buổi: ${sessionName}`;
-    }
-
-    async function loadData() {
-      initDateTime();
-      try {
-        let response = await fetch(`${API_URL}?action=getData`);
-        let data = await response.json();
-        globalData = data;
-        populateClasses(data.classes);
-      } catch (err) {
-        alert("Lỗi tải dữ liệu từ Google Sheets: " + err.message);
-      }
-    }
-
-    function populateClasses(classes) {
-      const select = document.getElementById("classSelect");
-      select.innerHTML = "";
-      if (classes && classes.length > 0) {
-        classes.forEach(cls => {
-          let opt = document.createElement("option");
-          opt.value = cls;
-          opt.innerText = cls;
-          select.appendChild(opt);
-        });
-        changeClass();
-      } else {
-        select.innerHTML = "<option>Không có lớp nào</option>";
-      }
-    }
-
-    function changeClass() {
-      const selectedClass = document.getElementById("classSelect").value;
-      const container = document.getElementById("studentListContainer");
-      container.innerHTML = "";
-
-      if (!globalData.studentsByClass || !globalData.studentsByClass[selectedClass]) {
-        container.innerHTML = "<div style='color: #64748b; font-size: 14px; text-align: center; padding: 10px;'>Không có học sinh trong lớp này</div>";
-        updateAbsentCount();
-        return;
-      }
-
-      const students = globalData.studentsByClass[selectedClass];
-      students.forEach(st => {
-        let div = document.createElement("div");
-        div.className = "student-item";
-        div.innerHTML = `
-          <span style="font-size: 14px; font-weight: 500;">${st.name} (${st.id})</span>
-          <input type="checkbox" class="student-checkbox" value="${st.name}" disabled onchange="updateAbsentCount()" style="width: 18px; height: 18px; cursor: pointer;">
-        `;
-        container.appendChild(div);
-      });
-      updateAbsentCount();
-    }
-
-    function updateAbsentCount() {
-      const checkboxes = document.querySelectorAll(".student-checkbox:checked");
-      document.getElementById("absentCountDisplay").innerText = checkboxes.length;
-    }
-
-    function requestSubmit() {
-      document.getElementById("passwordInput").value = "";
-      document.getElementById("passwordModal").style.display = "flex";
-    }
-
-    function closeModal() {
-      document.getElementById("passwordModal").style.display = "none";
-    }
-
-    async function verifyAndUnlock() {
-      const password = document.getElementById("passwordInput").value;
-      if (!password) {
-        alert("Vui lòng nhập mật khẩu!");
-        return;
-      }
-
-      try {
-        let response = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "verifyPassword", password: password })
-        });
-        let res = await response.json();
-
-        if (res.isValid) {
-          isUnlocked = true;
-          closeModal();
-          
-          document.querySelectorAll(".student-checkbox").forEach(cb => cb.disabled = false);
-          document.getElementById("lockStatus").innerText = "🔓 Đã mở khóa";
-          document.getElementById("lockStatus").style.background = "#d1fae5";
-          document.getElementById("lockStatus").style.color = "#065f46";
-          
-          executeSubmitAttendance(password);
-        } else {
-          alert("Mật khẩu không chính xác!");
-        }
-      } catch (err) {
-        alert("Lỗi kết nối xác thực: " + err.message);
-      }
-    }
-
-    async function executeSubmitAttendance(password) {
-      const selectedClass = document.getElementById("classSelect").value;
-      const sessionText = document.getElementById("sessionDisplay").innerText.replace("Buổi: ", "").replace("☀️ ", "").replace("🌤️ ", "").replace("🌙 ", "").trim();
-      
-      const checkboxes = document.querySelectorAll(".student-checkbox");
-      const totalStudents = checkboxes.length;
-      
-      let absentNamesArr = [];
-      checkboxes.forEach(cb => {
-        if (cb.checked) absentNamesArr.push(cb.value);
-      });
-
-      const formData = {
-        action: "submitAttendance",
-        password: password,
-        className: selectedClass,
-        session: sessionText,
-        totalStudents: totalStudents,
-        absentCount: absentNamesArr.length,
-        absentNames: absentNamesArr.join(", ")
+        loadInitialData();
       };
 
-      try {
-        let response = await fetch(API_URL, {
+      function loadInitialData() {
+        fetch(SCRIPT_URL + "?action=getData")
+          .then(response => response.json())
+          .then(data => {
+            globalData = data;
+            let classSelect = document.getElementById('classSelect');
+            classSelect.innerHTML = "";
+            
+            if(data.classes && data.classes.length > 0) {
+              data.classes.forEach(function(cls) {
+                let opt = document.createElement('option');
+                opt.value = cls;
+                opt.innerText = cls;
+                classSelect.appendChild(opt);
+              });
+              onClassChange();
+            } else {
+              classSelect.innerHTML = '<option value="">Không có dữ liệu lớp</option>';
+            }
+          })
+          .catch(error => {
+            console.error("Lỗi khi tải dữ liệu:", error);
+            document.getElementById('saveStatus').innerText = "Lỗi kết nối tới Sheet!";
+          });
+      }
+
+      function requestUnlock() {
+        if (isUnlocked) {
+          if (confirm("Bạn có muốn khóa lại không?")) {
+            lockApp();
+          }
+          return;
+        }
+
+        let pwd = prompt("Nhập mật khẩu để mở khóa nhập số vắng và lưu điểm danh:");
+        if (pwd === null) return;
+
+        fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "verifyPassword", password: pwd })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.isValid) {
+            isUnlocked = true;
+            currentPassword = pwd;
+            unlockApp();
+            alert("Mở khóa thành công!");
+          } else {
+            alert("Mật khẩu không đúng! Vui lòng kiểm tra lại sheet cấu hình.");
+          }
+        })
+        .catch(err => {
+          alert("Lỗi kết nối xác thực mật khẩu.");
+        });
+      }
+
+      function unlockApp() {
+        document.getElementById('lockStatusBadge').innerText = "🔓 Đã mở khóa";
+        document.getElementById('lockStatusBadge').className = "unlock-badge unlocked";
+        document.getElementById('absentInput').disabled = false;
+        document.getElementById('quickSelectStudent').disabled = false;
+        document.getElementById('noteTextarea').disabled = false;
+        document.getElementById('noteTextarea').placeholder = "Hoặc nhập ghi chú / tên học sinh tại đây...";
+        document.getElementById('saveBtn').disabled = false;
+        document.getElementById('saveBtn').innerHTML = "<span>✔ LƯU ĐIỂM DANH NGAY</span>";
+        renderAbsentList();
+      }
+
+      function lockApp() {
+        isUnlocked = false;
+        currentPassword = "";
+        document.getElementById('lockStatusBadge').innerText = "🔒 Đang khóa";
+        document.getElementById('lockStatusBadge').className = "unlock-badge";
+        document.getElementById('absentInput').disabled = true;
+        document.getElementById('quickSelectStudent').disabled = true;
+        document.getElementById('noteTextarea').disabled = true;
+        document.getElementById('noteTextarea').placeholder = "Nhập mật khẩu để mở khóa chỉnh sửa...";
+        document.getElementById('saveBtn').disabled = true;
+        document.getElementById('saveBtn').innerHTML = "<span>✔ LƯU ĐIỂM DANH NGAY (CẦN MẬT KHẨU)</span>";
+        renderAbsentList();
+      }
+
+      function onClassChange() {
+        let selectedClass = document.getElementById('classSelect').value;
+        absentStudentNames = []; 
+        document.getElementById('noteTextarea').value = "";
+        
+        // Cập nhật danh sách học sinh theo lớp cho dropdown chọn nhanh
+        if (globalData.studentsByClass && globalData.studentsByClass[selectedClass]) {
+          currentTotalStudents = globalData.studentsByClass[selectedClass].length;
+          
+          let quickSelect = document.getElementById('quickSelectStudent');
+          quickSelect.innerHTML = '<option value="">-- Chọn nhanh học sinh từ danh sách --</option>';
+          globalData.studentsByClass[selectedClass].forEach(function(st) {
+            let opt = document.createElement('option');
+            opt.value = st.name;
+            opt.innerText = st.name;
+            quickSelect.appendChild(opt);
+          });
+        } else {
+          currentTotalStudents = 0;
+          let quickSelect = document.getElementById('quickSelectStudent');
+          quickSelect.innerHTML = '<option value="">-- Không có danh sách học sinh --</option>';
+        }
+
+        // TỰ ĐỘNG KHÔI PHỤC KẾT QUẢ ĐÃ LƯU GẦN NHẤT CỦA LỚP NÀY NẾU CÓ
+        if (globalData.attendanceHistory && globalData.attendanceHistory[selectedClass]) {
+          let history = globalData.attendanceHistory[selectedClass];
+          document.getElementById('absentInput').value = history.absentCount;
+          document.getElementById('noteTextarea').value = history.absentNames || "";
+          
+          if (history.absentNames && history.absentNames.trim() !== "") {
+            absentStudentNames = history.absentNames.split(',').map(item => item.trim()).filter(item => item !== "");
+          } else {
+            absentStudentNames = [];
+          }
+          
+          document.getElementById('saveStatus').innerText = "Đã lưu gần nhất: " + history.time;
+        } else {
+          document.getElementById('absentInput').value = 0;
+          document.getElementById('saveStatus').innerText = "Chưa có dữ liệu điểm danh lớp này";
+        }
+
+        updateStats();
+        renderAbsentList();
+      }
+
+      function addAbsentStudent(selectObj) {
+        if (!isUnlocked) return;
+        let name = selectObj.value;
+        if (!name) return;
+        
+        if (!absentStudentNames.includes(name)) {
+          absentStudentNames.push(name);
+          updateTextareaFromList();
+          renderAbsentList();
+        }
+        selectObj.value = ""; 
+      }
+
+      function removeAbsentStudent(index) {
+        if (!isUnlocked) return;
+        absentStudentNames.splice(index, 1);
+        updateTextareaFromList();
+        renderAbsentList();
+      }
+
+      function updateTextareaFromList() {
+        document.getElementById('noteTextarea').value = absentStudentNames.join(", ");
+      }
+
+      function syncTypedNamesToasts() {
+        if (!isUnlocked) return;
+        let textValue = document.getElementById('noteTextarea').value;
+        if(textValue.trim() === "") {
+          absentStudentNames = [];
+        } else {
+          absentStudentNames = textValue.split(',').map(item => item.trim()).filter(item => item !== "");
+        }
+        renderAbsentList();
+      }
+
+      function renderAbsentList() {
+        let container = document.getElementById('absentStudentContainer');
+        if (absentStudentNames.length === 0) {
+          container.innerHTML = '<div style="color: #94a3b8; font-size: 15px; text-align: center; padding: 8px;">Chưa có học sinh nào vắng</div>';
+          return;
+        }
+        let html = "";
+        absentStudentNames.forEach(function(name, index) {
+          let deleteBtnAttr = isUnlocked ? `onclick="removeAbsentStudent(${index})"` : `disabled`;
+          let btnStyle = isUnlocked ? `` : `style="background: #f1f5f9; color: #94a3b8; cursor: not-allowed;"`;
+
+          html += `
+            <div class="absent-item">
+              <span><b>${index + 1}.</b> ${name}</span>
+              <button class="remove-btn" ${deleteBtnAttr} ${btnStyle}>Xóa</button>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      function updateStats() {
+        let absentVal = parseInt(document.getElementById('absentInput').value) || 0;
+        if (absentVal > currentTotalStudents) absentVal = currentTotalStudents;
+        if (absentVal < 0) absentVal = 0;
+        
+        let presentVal = currentTotalStudents - absentVal;
+        
+        document.getElementById('statAbsent').innerText = absentVal;
+        document.getElementById('statPresentTotal').innerText = presentVal + " / " + currentTotalStudents;
+      }
+
+      function saveAttendance() {
+        if (!isUnlocked) {
+          alert("Vui lòng mở khóa bằng mật khẩu trước khi lưu!");
+          return;
+        }
+
+        let className = document.getElementById('classSelect').value;
+        if (!className) {
+          alert("Vui lòng chọn lớp học!");
+          return;
+        }
+        let noteContent = document.getElementById('noteTextarea').value;
+        let absentCount = parseInt(document.getElementById('absentInput').value) || 0;
+        
+        let formData = {
+          action: "submitAttendance",
+          className: className,
+          session: "Sáng",
+          absentCount: absentCount,
+          absentNames: noteContent,
+          totalStudents: currentTotalStudents,
+          password: currentPassword
+        };
+
+        document.getElementById('saveStatus').innerText = "Đang lưu...";
+
+        fetch(SCRIPT_URL, {
           method: "POST",
           body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            document.getElementById('saveStatus').innerText = "Đã lưu: " + res.time;
+            // Cập nhật lại cache lịch sử cục bộ để khi đổi lớp qua lại không bị mất
+            if(!globalData.attendanceHistory) globalData.attendanceHistory = {};
+            globalData.attendanceHistory[className] = {
+              absentCount: absentCount,
+              absentNames: noteContent,
+              time: res.time
+            };
+
+            alert("Lưu điểm danh thành công!");
+            lockApp(); 
+          } else {
+            alert(res.message || "Lỗi lưu điểm danh. Mật khẩu có thể đã bị thay đổi!");
+            lockApp(); 
+          }
+        })
+        .catch(err => {
+          alert("Lỗi kết nối khi lưu điểm danh.");
+          lockApp();
         });
-        let result = await response.json();
-
-        if (result.success) {
-          document.getElementById("statusMessage").innerText = "Đã lưu điểm danh lúc: " + result.time;
-          alert("Điểm danh thành công!");
-        } else {
-          alert("Lỗi: " + result.message);
-        }
-      } catch (err) {
-        alert("Lỗi hệ thống khi lưu: " + err.message);
       }
-    }
-
-    window.onload = loadData;
-  </script>
-</body>
+    </script>
+  </body>
 </html>
