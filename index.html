@@ -1,0 +1,590 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --primary-light: #e0e7ff;
+        --accent: #06b6d4;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #475569;
+        --border-color: #cbd5e1;
+        --danger: #ef4444;
+        --danger-light: #fee2e2;
+        --success: #10b981;
+      }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+      .fullscreen-app {
+        width: 100%;
+        max-width: 420px;
+        background: var(--card-bg);
+        border-radius: 14px;
+        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        overflow: hidden;
+        margin-top: 4px;
+        margin-bottom: 4px;
+      }
+      .header-bar {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        font-size: 19px;
+        letter-spacing: 0.3px;
+      }
+      .content {
+        padding: 14px;
+        flex: 1;
+        box-sizing: border-box;
+        background-color: #f8fafc;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+      .meta-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f1f5f9;
+        padding: 10px 14px;
+        border-radius: 8px;
+        justify-content: flex-start;
+        font-size: 16px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .meta-item select {
+        border: none;
+        background: transparent;
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 16px;
+        outline: none;
+        cursor: pointer;
+        width: 100%;
+      }
+      .grid-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .label-title {
+        font-size: 15px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .input-number {
+        width: 100%;
+        padding: 12px;
+        font-size: 24px;
+        border: 2px solid #cbd5e1;
+        border-radius: 10px;
+        box-sizing: border-box;
+        outline: none;
+        color: var(--danger);
+        font-weight: 900;
+        text-align: center;
+        background: #fff;
+        transition: border-color 0.2s;
+      }
+      .input-number:disabled {
+        background: #e2e8f0;
+        cursor: not-allowed;
+      }
+      .input-number:focus {
+        border-color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+      }
+      .stat-card {
+        flex: 1;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px 8px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .stat-card .title {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        font-weight: 700;
+      }
+      .stat-card .value {
+        font-size: 22px;
+        font-weight: 900;
+      }
+      .stat-card.vắng .value { color: var(--danger); }
+      .stat-card.comat .value { color: var(--primary); }
+      .select-dropdown {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background: #fff;
+        color: var(--text-main);
+        outline: none;
+        font-weight: 600;
+        box-sizing: border-box;
+      }
+      .select-dropdown:disabled {
+        background: #e2e8f0;
+        cursor: not-allowed;
+      }
+      .textarea-note {
+        width: 100%;
+        height: 75px;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        box-sizing: border-box;
+        resize: none;
+        outline: none;
+        color: var(--text-main);
+        background: #fff;
+        font-weight: 500;
+      }
+      .textarea-note:disabled {
+        background: #e2e8f0;
+        cursor: not-allowed;
+      }
+      .absent-student-list {
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 8px;
+        margin-top: 10px;
+        max-height: 150px;
+        overflow-y: auto;
+      }
+      .absent-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        background: #fff;
+        margin-bottom: 6px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .remove-btn {
+        background: var(--danger-light);
+        color: var(--danger);
+        border: none;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .remove-btn:disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+        cursor: not-allowed;
+      }
+      .btn-save {
+        width: 100%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      }
+      .btn-save:disabled {
+        background: #94a3b8;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+      .save-status {
+        font-size: 14px;
+        color: var(--success);
+        font-weight: 700;
+        text-align: right;
+        margin-top: 6px;
+      }
+      .unlock-badge {
+        font-size: 13px;
+        background: var(--danger-light);
+        color: var(--danger);
+        padding: 3px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        border: 1px solid #fecaca;
+      }
+      .unlock-badge.unlocked {
+        background: #d1fae5;
+        color: var(--success);
+        border-color: #a7f3d0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fullscreen-app">
+      <div class="header-bar">
+        <span>✨ Điểm Danh Nhanh</span>
+        <span id="headerDate" style="font-size: 15px; font-weight: 600; background: rgba(255,255,255,0.25); padding: 5px 12px; border-radius: 20px;">📅 --/--/----</span>
+      </div>
+      
+      <div class="content">
+        <div class="card" style="padding: 12px 14px; margin-bottom: 12px;">
+          <div class="meta-row">
+            <div class="meta-item" id="currentDateShort">📅 --</div>
+            <div class="meta-item">☀️ Buổi: <b>Sáng</b></div>
+            <div class="meta-item">
+              🎓 Lớp: 
+              <select id="classSelect" onchange="onClassChange()">
+                <option value="">Đang tải...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-layout">
+          <div class="card" style="margin-bottom: 0;">
+            <div class="label-title">
+              <span>📊 Tổng số học sinh vắng:</span>
+              <span id="lockStatusBadge" class="unlock-badge" onclick="requestUnlock()">🔒 Đang khóa</span>
+            </div>
+            <input type="number" id="absentInput" class="input-number" value="0" min="0" oninput="updateStats()" disabled>
+            <div id="saveStatus" class="save-status">Chưa lưu điểm danh</div>
+          </div>
+          
+          <div class="card" style="margin-bottom: 0;">
+            <div class="stats-container">
+              <div class="stat-card vắng">
+                <div class="title">Vắng</div>
+                <div class="value" id="statAbsent">0</div>
+              </div>
+              <div class="stat-card comat">
+                <div class="title">Có mặt / Tổng</div>
+                <div class="value" id="statPresentTotal" style="font-size: 18px;">0 / 0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 12px; margin-top: 12px;">
+          <div class="label-title">📝 DANH SÁCH & GHI CHÚ VẮNG</div>
+          <select id="quickSelectStudent" class="select-dropdown" onchange="addAbsentStudent(this)" disabled>
+            <option value="">-- Chọn nhanh học sinh từ danh sách --</option>
+          </select>
+          <textarea id="noteTextarea" class="textarea-note" placeholder="Nhập mật khẩu để mở khóa chỉnh sửa..." oninput="syncTypedNamesToasts()" disabled></textarea>
+          
+          <div class="label-title" style="margin-top: 12px; margin-bottom: 6px;">Danh sách hiển thị chi tiết:</div>
+          <div id="absentStudentContainer" class="absent-student-list">
+            <div style="color: #94a3b8; font-size: 15px; text-align: center; padding: 8px;">Chưa có học sinh nào vắng</div>
+          </div>
+        </div>
+
+        <button id="saveBtn" class="btn-save" onclick="saveAttendance()" disabled>
+          <span>✔ LƯU ĐIỂM DANH NGAY (CẦN MẬT KHẨU)</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Đã tự động cập nhật link Web App của thầy/cô
+      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyPb4Txkqa8XJvPtSRMyEnL46-8cnQUml2fgUzzPa7P_IeqHjKMW8XM4PmKSssUjZZR/exec";
+
+      let globalData = {};
+      let currentTotalStudents = 0; 
+      let absentStudentNames = []; 
+      let isUnlocked = false; 
+      let currentPassword = ""; 
+
+      window.onload = function() {
+        let today = new Date();
+        let days = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+        let dayStr = days[today.getDay()];
+        let dateFormatted = dayStr + ", " + String(today.getDate()).padStart(2, '0') + "/" + String(today.getMonth() + 1).padStart(2, '0');
+        let dateHeaderStr = String(today.getDate()).padStart(2, '0') + "/" + String(today.getMonth() + 1).padStart(2, '0') + "/" + today.getFullYear();
+        
+        document.getElementById('currentDateShort').innerText = "📅 " + dateFormatted;
+        document.getElementById('headerDate').innerText = "📅 " + dateHeaderStr;
+
+        // Lấy dữ liệu khởi tạo từ Google Sheet thông qua API GET
+        fetch(WEB_APP_URL + "?action=getData")
+          .then(response => response.json())
+          .then(data => {
+            globalData = data;
+            let classSelect = document.getElementById('classSelect');
+            classSelect.innerHTML = "";
+            
+            if(data.classes && data.classes.length > 0) {
+              data.classes.forEach(function(cls) {
+                let opt = document.createElement('option');
+                opt.value = cls;
+                opt.innerText = cls;
+                classSelect.appendChild(opt);
+              });
+              onClassChange();
+            }
+          })
+          .catch(err => {
+            console.error("Lỗi tải dữ liệu:", err);
+            alert("Không thể kết nối tới Google Sheet. Vui lòng kiểm tra lại URL Web App!");
+          });
+      };
+
+      function requestUnlock() {
+        if (isUnlocked) {
+          if (confirm("Bạn có muốn khóa lại không?")) {
+            lockApp();
+          }
+          return;
+        }
+
+        let pwd = prompt("Nhập mật khẩu để mở khóa nhập số vắng và lưu điểm danh:");
+        if (pwd === null) return;
+
+        // Gửi yêu cầu xác thực mật khẩu qua API POST
+        fetch(WEB_APP_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "verifyPassword", password: pwd })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.isValid) {
+            isUnlocked = true;
+            currentPassword = pwd;
+            unlockApp();
+            alert("Mở khóa thành công!");
+          } else {
+            alert("Mật khẩu không đúng! Vui lòng kiểm tra lại sheet cấu hình.");
+          }
+        })
+        .catch(err => alert("Lỗi kết nối xác thực mật khẩu!"));
+      }
+
+      function unlockApp() {
+        document.getElementById('lockStatusBadge').innerText = "🔓 Đã mở khóa";
+        document.getElementById('lockStatusBadge').className = "unlock-badge unlocked";
+        document.getElementById('absentInput').disabled = false;
+        document.getElementById('quickSelectStudent').disabled = false;
+        document.getElementById('noteTextarea').disabled = false;
+        document.getElementById('noteTextarea').placeholder = "Hoặc nhập ghi chú / tên học sinh tại đây...";
+        document.getElementById('saveBtn').disabled = false;
+        document.getElementById('saveBtn').innerHTML = "<span>✔ LƯU ĐIỂM DANH NGAY</span>";
+        renderAbsentList();
+      }
+
+      function lockApp() {
+        isUnlocked = false;
+        currentPassword = "";
+        document.getElementById('lockStatusBadge').innerText = "🔒 Đang khóa";
+        document.getElementById('lockStatusBadge').className = "unlock-badge";
+        document.getElementById('absentInput').disabled = true;
+        document.getElementById('quickSelectStudent').disabled = true;
+        document.getElementById('noteTextarea').disabled = true;
+        document.getElementById('noteTextarea').placeholder = "Nhập mật khẩu để mở khóa chỉnh sửa...";
+        document.getElementById('saveBtn').disabled = true;
+        document.getElementById('saveBtn').innerHTML = "<span>✔ LƯU ĐIỂM DANH NGAY (CẦN MẬT KHẨU)</span>";
+        renderAbsentList();
+      }
+
+      function onClassChange() {
+        let selectedClass = document.getElementById('classSelect').value;
+        absentStudentNames = []; 
+        if (isUnlocked) {
+          document.getElementById('noteTextarea').value = "";
+        }
+        
+        if (globalData.studentsByClass && globalData.studentsByClass[selectedClass]) {
+          currentTotalStudents = globalData.studentsByClass[selectedClass].length;
+          
+          let quickSelect = document.getElementById('quickSelectStudent');
+          quickSelect.innerHTML = '<option value="">-- Chọn nhanh học sinh từ danh sách --</option>';
+          globalData.studentsByClass[selectedClass].forEach(function(st) {
+            let opt = document.createElement('option');
+            opt.value = st.name;
+            opt.innerText = st.name;
+            quickSelect.appendChild(opt);
+          });
+        } else {
+          currentTotalStudents = 0;
+          let quickSelect = document.getElementById('quickSelectStudent');
+          quickSelect.innerHTML = '<option value="">-- Không có danh sách học sinh --</option>';
+        }
+        updateStats();
+        renderAbsentList();
+      }
+
+      function addAbsentStudent(selectObj) {
+        if (!isUnlocked) return;
+        let name = selectObj.value;
+        if (!name) return;
+        
+        if (!absentStudentNames.includes(name)) {
+          absentStudentNames.push(name);
+          updateTextareaFromList();
+          renderAbsentList();
+        }
+        selectObj.value = ""; 
+      }
+
+      function removeAbsentStudent(index) {
+        if (!isUnlocked) return;
+        absentStudentNames.splice(index, 1);
+        updateTextareaFromList();
+        renderAbsentList();
+      }
+
+      function updateTextareaFromList() {
+        document.getElementById('noteTextarea').value = absentStudentNames.join(", ");
+      }
+
+      function syncTypedNamesToasts() {
+        if (!isUnlocked) return;
+        let textValue = document.getElementById('noteTextarea').value;
+        if(textValue.trim() === "") {
+          absentStudentNames = [];
+        } else {
+          absentStudentNames = textValue.split(',').map(item => item.trim()).filter(item => item !== "");
+        }
+        renderAbsentList();
+      }
+
+      function renderAbsentList() {
+        let container = document.getElementById('absentStudentContainer');
+        if (absentStudentNames.length === 0) {
+          container.innerHTML = '<div style="color: #94a3b8; font-size: 15px; text-align: center; padding: 8px;">Chưa có học sinh nào vắng</div>';
+          return;
+        }
+        let html = "";
+        absentStudentNames.forEach(function(name, index) {
+          let deleteBtnAttr = isUnlocked ? `onclick="removeAbsentStudent(${index})"` : `disabled`;
+          let btnStyle = isUnlocked ? `` : `style="background: #f1f5f9; color: #94a3b8; cursor: not-allowed;"`;
+
+          html += `
+            <div class="absent-item">
+              <span><b>${index + 1}.</b> ${name}</span>
+              <button class="remove-btn" ${deleteBtnAttr} ${btnStyle}>Xóa</button>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      function updateStats() {
+        let absentVal = parseInt(document.getElementById('absentInput').value) || 0;
+        if (absentVal > currentTotalStudents) absentVal = currentTotalStudents;
+        if (absentVal < 0) absentVal = 0;
+        
+        let presentVal = currentTotalStudents - absentVal;
+        
+        document.getElementById('statAbsent').innerText = absentVal;
+        document.getElementById('statPresentTotal').innerText = presentVal + " / " + currentTotalStudents;
+      }
+
+      function saveAttendance() {
+        if (!isUnlocked) {
+          alert("Vui lòng mở khóa bằng mật khẩu trước khi lưu!");
+          return;
+        }
+
+        let className = document.getElementById('classSelect').value;
+        if (!className) {
+          alert("Vui lòng chọn lớp học!");
+          return;
+        }
+        let noteContent = document.getElementById('noteTextarea').value;
+        let absentCount = parseInt(document.getElementById('absentInput').value) || 0;
+        
+        let formData = {
+          action: "submitAttendance",
+          className: className,
+          session: "Sáng",
+          absentCount: absentCount,
+          absentNames: noteContent,
+          totalStudents: currentTotalStudents,
+          password: currentPassword
+        };
+
+        document.getElementById('saveStatus').innerText = "Đang lưu...";
+
+        // Gửi dữ liệu điểm danh qua API POST
+        fetch(WEB_APP_URL, {
+          method: "POST",
+          body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            document.getElementById('saveStatus').innerText = "Đã lưu: " + res.time;
+            alert("Lưu điểm danh thành công!");
+            lockApp(); 
+          } else {
+            alert(res.message || "Lỗi lưu điểm danh. Mật khẩu có thể đã bị thay đổi!");
+            lockApp(); 
+          }
+        })
+        .catch(err => {
+          alert("Lỗi kết nối khi lưu điểm danh!");
+          document.getElementById('saveStatus').innerText = "Lưu thất bại";
+        });
+      }
+    </script>
+  </body>
+</html>
